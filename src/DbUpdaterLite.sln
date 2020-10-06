@@ -1,0 +1,30 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.1209
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DbUpdaterLite", "DbUpdaterLite\DbUpdaterLite.csproj", "{0190B40B-AC5B-414F-8A00-9B6A2C12B010}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbUpdaterLite.Tests", "DbUpdaterLite.Tests\DbUpdaterLite.Tests.csproj", "{13C28B44-AB17-4A1B-BB33-8B6A4968C9E4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0190B40B-AC5B-414F-8A00-9B6A2C12B010}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0190B40B-AC5B-414F-8A00-9B6A2C12B010}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0190B40B-AC5B-414F-8A00-9B6A2C12B010}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0190B40B-AC5B-414F-8A00-9B6A2C12B010}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13C28B44-AB17-4A1B-BB33-8B6A4968C9E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13C28B44-AB17-4A1B-BB33-8B6A4968C9E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13C28B44-AB17-4A1B-BB33-8B6A4968C9E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13C28B44-AB17-4A1B-BB33-8B6A4968C9E4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6807402B-EE7A-4324-A615-28F3499B1E9F}
+	EndGlobalSection
+EndGlobal
