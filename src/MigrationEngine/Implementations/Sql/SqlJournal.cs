@@ -93,12 +93,12 @@ namespace MigrationEngine.Implementations.Sql
         {
             return commandRunner.RunCommand(Update);
 
-            Task<int> Update(DbCommand cmd) => cmd.Run(@"
-                UPDATE {SchemaTableName}
+            Task<int> Update(DbCommand cmd) => cmd.Run($@"
+                UPDATE [{schema}].[{table}]
                     SET Checksum = @checksum, Applied = @applied
                 WHERE Name = @name",
                 ("name", entry.Name),
-                ("applied", entry.AppliedAt),
+                ("applied", DateTime.Now),
                 ("checksum", entry.Checksum));
         }
     }
