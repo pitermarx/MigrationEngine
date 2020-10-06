@@ -1,4 +1,4 @@
-﻿namespace DbUpdateLite.Interfaces
+﻿namespace MigrationEngine.Interfaces
 {
     public interface IJournalEntry
     {

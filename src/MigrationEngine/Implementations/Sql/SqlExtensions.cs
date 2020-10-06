@@ -2,10 +2,10 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using DbUpdateLite.Core;
-using DbUpdateLite.Interfaces;
+using MigrationEngine.Core;
+using MigrationEngine.Interfaces;
 
-namespace DbUpdateLite.Implementations.Sql
+namespace MigrationEngine.Implementations.Sql
 {
     public static class SqlExtensions
     {

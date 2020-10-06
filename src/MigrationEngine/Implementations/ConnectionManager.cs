@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Data.Common;
 using System.Threading.Tasks;
-using DbUpdateLite.Interfaces;
+using MigrationEngine.Interfaces;
 
-namespace DbUpdateLite.Implementations
+namespace MigrationEngine.Implementations
 {
     /// <summary>
     /// Implementation for an <see cref="IConnectionManager"/> which also implements an <see cref="ICommandRunner"/>

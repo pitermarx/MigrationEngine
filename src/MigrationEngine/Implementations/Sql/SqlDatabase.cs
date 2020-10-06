@@ -2,12 +2,12 @@
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
-using DbUpdateLite.Core;
-using DbUpdateLite.Interfaces;
-using DbUpdateLite.Options;
+using MigrationEngine.Core;
+using MigrationEngine.Interfaces;
+using MigrationEngine.Options;
 using Microsoft.Extensions.Logging;
 
-namespace DbUpdateLite.Implementations.Sql
+namespace MigrationEngine.Implementations.Sql
 {
     /// <summary>
     /// Implementation for <see cref="IDatabase"/> for an SqlServer database
@@ -96,7 +96,7 @@ namespace DbUpdateLite.Implementations.Sql
                 await mig.Run(con);
             }
         }
-        
+
         public Task<IConnectionManager> OpenConnection(bool withTransaction = false)
             => OpenConnection(withTransaction, Name);
 

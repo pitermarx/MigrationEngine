@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using DbUpdateLite.Options;
+using MigrationEngine.Options;
 
-namespace DbUpdateLite.Interfaces
+namespace MigrationEngine.Interfaces
 {
     public interface IMigration<T> where T : IJournalEntry
     {

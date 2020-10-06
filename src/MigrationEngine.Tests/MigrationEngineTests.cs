@@ -1,16 +1,16 @@
 using System.Data.SqlClient;
 using System.Threading.Tasks;
-using DbUpdateLite.Implementations.Sql;
-using DbUpdateLite.Options;
+using MigrationEngine.Implementations.Sql;
+using MigrationEngine.Options;
 using NUnit.Framework;
 
-namespace DbUpdaterLite.Tests
+namespace MigrationEngine.Tests
 {
-    public class DbUpdaterLiteTests
+    public class MigrationEngineTests
     {
-        private const string DatabaseName = nameof(DbUpdaterLiteTests);
+        private const string DatabaseName = nameof(MigrationEngineTests);
         private static readonly string LocalDb = $@"Server=(localdb)\MSSQLLocalDB;Integrated Security=true;Initial Catalog={DatabaseName}";
-        
+
         [SetUp]
         public async Task Setup()
         {

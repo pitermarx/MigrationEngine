@@ -1,6 +1,6 @@
-﻿using DbUpdateLite.Implementations.Sql;
+﻿using MigrationEngine.Implementations.Sql;
 
-namespace  DbUpdateLite.Options
+namespace  MigrationEngine.Options
 {
     /// <summary>
     /// Options used to create an <see cref="SqlDatabase"/>

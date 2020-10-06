@@ -1,6 +1,6 @@
-﻿using DbUpdateLite.Interfaces;
+﻿using MigrationEngine.Interfaces;
 
-namespace DbUpdateLite.Options
+namespace MigrationEngine.Options
 {
     /// <summary>
     /// Options In the <see cref="IMigration{T}"/>

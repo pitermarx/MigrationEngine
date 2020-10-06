@@ -2,12 +2,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Title>DbUpdateLite</Title>
+    <Title>MigrationEngine</Title>
     <Authors>pitermarx</Authors>
     <TargetFrameworks>net472</TargetFrameworks>
-    <AssemblyName>DbUpdateLite</AssemblyName>
-    <RootNamespace>DbUpdateLite</RootNamespace>
-    <PackageId>DbUpdateLite</PackageId>
+    <AssemblyName>MigrationEngine</AssemblyName>
+    <RootNamespace>MigrationEngine</RootNamespace>
+    <PackageId>MigrationEngine</PackageId>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>

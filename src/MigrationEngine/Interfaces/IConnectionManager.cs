@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DbUpdateLite.Interfaces
+namespace MigrationEngine.Interfaces
 {
     public interface IConnectionManager : ICommandRunner, IDisposable
     {

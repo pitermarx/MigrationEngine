@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace DbUpdateLite.Interfaces
+namespace MigrationEngine.Interfaces
 {
     public interface IJournal<T> where T : IJournalEntry
     {

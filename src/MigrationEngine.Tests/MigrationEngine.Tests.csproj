@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DbUpdaterLite\DbUpdaterLite.csproj" />
+    <ProjectReference Include="..\MigrationEngine\MigrationEngine.csproj" />
   </ItemGroup>
 
 </Project>

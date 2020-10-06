@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Threading.Tasks;
-using DbUpdateLite.Core;
-using DbUpdateLite.Interfaces;
+using MigrationEngine.Core;
+using MigrationEngine.Interfaces;
 
-namespace DbUpdateLite.Implementations.Sql
+namespace MigrationEngine.Implementations.Sql
 {
     public abstract class SqlJournal<T> : IJournal<T>
         where T : SqlJournalEntry

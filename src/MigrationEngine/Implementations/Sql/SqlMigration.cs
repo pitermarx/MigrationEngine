@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
-using DbUpdateLite.Interfaces;
-using DbUpdateLite.Options;
+using MigrationEngine.Interfaces;
+using MigrationEngine.Options;
 
-namespace DbUpdateLite.Implementations.Sql
+namespace MigrationEngine.Implementations.Sql
 {
     public class SqlMigration : IMigration<SqlJournalEntry>
     {

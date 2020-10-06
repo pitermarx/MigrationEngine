@@ -2,7 +2,7 @@
 using System.Data.Common;
 using System.Threading.Tasks;
 
-namespace DbUpdateLite.Interfaces
+namespace MigrationEngine.Interfaces
 {
     public interface ICommandRunner
     {

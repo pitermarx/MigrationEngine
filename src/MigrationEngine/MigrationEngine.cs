@@ -4,12 +4,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using DbUpdateLite.Core;
-using  DbUpdateLite.Interfaces;
-using DbUpdateLite.Options;
+using MigrationEngine.Core;
+using  MigrationEngine.Interfaces;
+using MigrationEngine.Options;
 using Microsoft.Extensions.Logging;
 
-namespace DbUpdateLite
+namespace MigrationEngine
 {
     /// <summary>
     /// The <see cref="MigrationEngine"/> runs each migration and adds it to the journal

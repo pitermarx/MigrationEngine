@@ -1,7 +1,7 @@
 ﻿using System;
-using DbUpdateLite.Interfaces;
+using MigrationEngine.Interfaces;
 
-namespace DbUpdateLite.Implementations.Sql
+namespace MigrationEngine.Implementations.Sql
 {
     public class SqlJournalEntry : IJournalEntry
     {

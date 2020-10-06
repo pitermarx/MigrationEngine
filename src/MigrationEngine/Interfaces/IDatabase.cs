@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace DbUpdateLite.Interfaces
+namespace MigrationEngine.Interfaces
 {
     public interface IDatabase
     {
