@@ -4,10 +4,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using MigrationEngine.Core;
-using  MigrationEngine.Interfaces;
-using MigrationEngine.Options;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using MigrationEngine.Interfaces;
+using MigrationEngine.Options;
 
 namespace MigrationEngine
 {
@@ -28,14 +28,22 @@ namespace MigrationEngine
         public MigrationEngine(IDatabase database, ILogger log = null)
         {
             this.database = database;
-            this.log = log ?? Extensions.DefaultLogger;
+            this.log = log ?? NullLogger.Instance;
+        }
+
+        public async Task EnsureDatabase(CancellationToken? ct = null)
+        {
+            if (!await database.Exists(ct))
+            {
+                await database.Create(ct);
+            }
         }
 
         public async Task<TimeSpan> Migrate<T>(IEnumerable<IMigration<T>> migrations, IJournal<T> journal = null, CancellationToken? ct = null)
             where T : IJournalEntry
         {
             ct = ct ?? CancellationToken.None;
-            var existingEntries = await EnsureJournal(journal);
+            var existingEntries = await EnsureJournal(journal, ct);
 
             var times = new Dictionary<string, TimeSpan>();
 
@@ -43,7 +51,6 @@ namespace MigrationEngine
             foreach (var mig in migrations)
             {
                 sw.Start();
-                ct.Value.ThrowIfCancellationRequested();
 
                 var ran = false;
                 try
@@ -52,12 +59,12 @@ namespace MigrationEngine
                     {
                         if (mig.Options.RunAlways || !existingEntries.Any(e => mig.Matches(e)))
                         {
-                            var entry = await mig.Run(con);
+                            var entry = await mig.Run(con, ct);
                             ran = true;
 
                             if (journal != null)
                             {
-                                await journal.Add(con, entry);
+                                await journal.Add(con, entry, ct);
                             }
                         }
 
@@ -82,7 +89,7 @@ namespace MigrationEngine
             return TimeSpan.FromSeconds(times.Sum(t => t.Value.TotalSeconds));
         }
 
-        private async Task<IReadOnlyList<T>> EnsureJournal<T>(IJournal<T> journal) where T : IJournalEntry
+        private async Task<IReadOnlyList<T>> EnsureJournal<T>(IJournal<T> journal, CancellationToken? token = null) where T : IJournalEntry
         {
             if (journal == null)
             {
@@ -92,7 +99,7 @@ namespace MigrationEngine
             using (var con = await database.OpenConnection())
             {
                 log.LogInformation("{0} -> Getting journal entries", database.Name);
-                return await journal.EnsureJournal(con);
+                return await journal.EnsureJournal(con, token);
             }
         }
     }

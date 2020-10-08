@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
+using MigrationEngine.Core;
 using MigrationEngine.Interfaces;
 using MigrationEngine.Options;
 
@@ -18,13 +20,17 @@ namespace MigrationEngine.Implementations.Sql
             this.sql = sql;
         }
 
-        public async Task<SqlJournalEntry> Run(ICommandRunner commandRunner)
+        /// <summary>
+        /// Runs an sql script after splitting it in commands
+        /// Returns an <see cref="SqlJournalEntry"/>
+        /// </summary>
+        public async Task<SqlJournalEntry> Run(ICommandRunner commandRunner, CancellationToken? token = null)
         {
-            await commandRunner.SplitAndRun(sql);
+            await commandRunner.SplitAndRun(sql, token);
 
-            return new SqlJournalEntry { AppliedAt = DateTime.Now, Name = Name, Checksum = null };
+            return new SqlJournalEntry { AppliedAt = DateTime.Now, Name = Name, Checksum = sql.GetChecksum() };
         }
-
+        
         public bool Matches(SqlJournalEntry entry) => entry.Name == Name;
     }
 }

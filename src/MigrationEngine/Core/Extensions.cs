@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.Common;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -30,23 +31,14 @@ namespace MigrationEngine.Core
             }
             return cmd;
         }
-
-        internal static Task<int> Run(this DbCommand cmd, string sql, params (string name, object value)[] parameters)
-            => cmd.Set(sql, parameters).ExecuteNonQueryAsync();
-
-        internal static async Task<int?> Scalar(this DbCommand cmd, string sql, params (string name, object value)[] parameters)
-            => (int?)await cmd.Set(sql, parameters).ExecuteScalarAsync();
-
-        internal static Task<DbDataReader> GetReader(this DbCommand cmd, string sql, params (string name, object value)[] parameters)
-            => cmd.Set(sql, parameters).ExecuteReaderAsync();
-
-        internal static async Task<IReadOnlyList<T>> ReadAll<T>(this Task<DbDataReader> reader, Func<DbDataReader, T> read)
+        
+        internal static async Task<IReadOnlyList<T>> ReadAll<T>(this DbCommand cmd, Func<DbDataReader, T> read, CancellationToken? ct = null)
         {
             var list = new List<T>();
 
-            using (var r = await reader)
+            using (var r = await cmd.ExecuteReaderAsync(ct.OrNone()))
             {
-                while (await r.ReadAsync())
+                while (await r.ReadAsync(ct.OrNone()))
                 {
                     list.Add(read(r));
                 }
@@ -70,5 +62,7 @@ namespace MigrationEngine.Core
 
             return hash.ToString();
         }
+
+        public static CancellationToken OrNone(this CancellationToken? ct) => ct ?? CancellationToken.None;
     }
 }

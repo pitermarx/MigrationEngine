@@ -23,6 +23,13 @@ namespace MigrationEngine.Implementations
             this.commandTimeout = commandTimeout;
         }
 
+        /// <summary>
+        /// Creates a command
+        /// Sets the <see cref="DbCommand.Transaction"/> and <see cref="DbCommand.CommandTimeout"/> from the Connection manager fields
+        /// Runs the <see cref="Func{T}"/>, passing the <see cref="DbCommand"/>
+        /// Disposes the <see cref="DbCommand"/>
+        /// returns the result of the <see cref="Func{T}"/>
+        /// </summary>
         public async Task<T> RunCommand<T>(Func<DbCommand, Task<T>> action)
         {
             using (var cmd = connection.CreateCommand())
@@ -33,11 +40,17 @@ namespace MigrationEngine.Implementations
             }
         }
 
+        /// <summary>
+        /// Commits the connection's transaction if it exists
+        /// </summary>
         public void Commit()
         {
             transaction?.Commit();
         }
 
+        /// <summary>
+        /// Disposes the <see cref="DbConnection"/> and the <see cref="DbTransaction"/>
+        /// </summary>
         public void Dispose()
         {
             transaction?.Dispose();

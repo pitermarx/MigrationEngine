@@ -15,7 +15,8 @@ namespace MigrationEngine.Tests
         public async Task Setup()
         {
             var options = new ConnectionOptions {ConnectionString = LocalDb, LogOutput = true, Timeout = 500};
-            var database = new SqlDatabase(options);
+            var log = Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance;
+            var database = new SqlDatabase(options, log);
             if (await database.Exists())
             {
                 await database.Drop();
