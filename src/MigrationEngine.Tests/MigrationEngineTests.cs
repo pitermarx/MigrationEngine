@@ -8,13 +8,13 @@ namespace MigrationEngine.Tests
 {
     public class MigrationEngineTests
     {
-        private const string DatabaseName = nameof(MigrationEngineTests);
-        private static readonly string LocalDb = $@"Server=(localdb)\MSSQLLocalDB;Integrated Security=true;Initial Catalog={DatabaseName}";
+        private const string databaseName = nameof(MigrationEngineTests);
+        private static readonly string localDb = $@"Server=(localdb)\MSSQLLocalDB;Integrated Security=true;Initial Catalog={databaseName}";
 
         [SetUp]
         public async Task Setup()
         {
-            var options = new ConnectionOptions {ConnectionString = LocalDb, LogOutput = true, Timeout = 500};
+            var options = new ConnectionOptions {ConnectionString = localDb, LogOutput = true, Timeout = 500};
             var log = Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance;
             var database = new SqlDatabase(options, log);
             if (await database.Exists())
@@ -28,7 +28,7 @@ namespace MigrationEngine.Tests
         [Test]
         public void Test1()
         {
-            using (var conn = new SqlConnection(LocalDb))
+            using (var conn = new SqlConnection(localDb))
             {
                 conn.Open();
                 var cmd = conn.CreateCommand();

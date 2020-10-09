@@ -6,19 +6,14 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 
 namespace MigrationEngine.Core
 {
     internal static class Extensions
     {
-        internal static readonly ILogger DefaultLogger = LoggerFactory.Create(c => { }).CreateLogger("Default");
         internal static T Set<T>(this T cmd, string sql, params (string name, object value)[] parameters)
             where T : IDbCommand
         {
-            // Can be useful to put here Logger.LogEvent(LogLevel.Debug, sql);
-
             cmd.CommandType = CommandType.Text;
             cmd.CommandText = sql;
             cmd.Parameters.Clear();

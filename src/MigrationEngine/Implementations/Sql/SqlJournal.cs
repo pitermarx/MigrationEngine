@@ -114,9 +114,9 @@ namespace MigrationEngine.Implementations.Sql
         /// </summary>
         public Task Update(ICommandRunner commandRunner, SqlJournalEntry entry, CancellationToken? token = null)
         {
-            return commandRunner.RunCommand(Update);
+            return commandRunner.RunCommand(UpdateCmd);
 
-            Task<int> Update(DbCommand cmd) => cmd
+            Task<int> UpdateCmd(DbCommand cmd) => cmd
                 .Set($@"
                     UPDATE [{schema}].[{table}]
                         SET Checksum = @checksum, Applied = @applied
