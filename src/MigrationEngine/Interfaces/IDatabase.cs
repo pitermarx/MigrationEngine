@@ -6,9 +6,9 @@ namespace MigrationEngine.Interfaces
     public interface IDatabase
     {
         string Name { get; }
-        Task<bool> Exists(CancellationToken? token = null);
-        Task Drop(CancellationToken? token = null);
-        Task Create(CancellationToken? token = null);
+        Task<bool> Exists(CancellationToken token = default);
+        Task Drop(CancellationToken token = default);
+        Task Create(CancellationToken token = default);
         Task<IConnectionManager> OpenConnection(bool withTransaction = false);
     }
 }

@@ -26,13 +26,13 @@ namespace MigrationEngine.Implementations.Sql
         /// <summary>
         /// Override this method to make migrations on the journal
         /// </summary>
-        public virtual Task EnsureJournalVersion(CancellationToken? token = null) => Task.CompletedTask;
+        public virtual Task EnsureJournalVersion(CancellationToken token = default) => Task.CompletedTask;
 
         /// <summary>
         /// Creates the journal table if it does not exist, and
         /// Returns all journal entries
         /// </summary>
-        public async Task<IReadOnlyList<SqlJournalEntry>> EnsureJournal(ICommandRunner commandRunner, CancellationToken? token = null)
+        public async Task<IReadOnlyList<SqlJournalEntry>> EnsureJournal(ICommandRunner commandRunner, CancellationToken token = default)
         {
             if (!await commandRunner.RunCommand(Exists))
             {
@@ -40,7 +40,7 @@ namespace MigrationEngine.Implementations.Sql
             }
             else
             {
-                await EnsureJournalVersion();
+                await EnsureJournalVersion(token);
             }
 
             return await commandRunner.RunCommand(ReadAll);
@@ -57,7 +57,7 @@ namespace MigrationEngine.Implementations.Sql
                         [Name] nvarchar(255) NOT NULL UNIQUE,
                         [Checksum] nvarchar(255) NOT NULL,
                         [Applied] datetime NOT NULL
-                    )").ExecuteNonQueryAsync(token.OrNone());
+                    )").ExecuteNonQueryAsync(token);
             }
 
             Task<IReadOnlyList<SqlJournalEntry>> ReadAll(DbCommand cmd)
@@ -85,7 +85,7 @@ namespace MigrationEngine.Implementations.Sql
 
                 var result = (int?)await cmd
                     .Set(sqlCommand, ("@table", table), ("@schema", schema))
-                    .ExecuteScalarAsync(token.OrNone());
+                    .ExecuteScalarAsync(token);
                 return result == 1;
             }
         }
@@ -93,7 +93,7 @@ namespace MigrationEngine.Implementations.Sql
         /// <summary>
         /// Adds a journal entry into the journal table
         /// </summary>
-        public Task Add(ICommandRunner commandRunner, SqlJournalEntry entry, CancellationToken? token = null)
+        public Task Add(ICommandRunner commandRunner, SqlJournalEntry entry, CancellationToken token = default)
         {
             return commandRunner.RunCommand(Insert);
 
@@ -106,17 +106,17 @@ namespace MigrationEngine.Implementations.Sql
                     ("name", entry.Name),
                     ("applied", entry.AppliedAt),
                     ("checksum", entry.Checksum))
-                .ExecuteNonQueryAsync(token.OrNone());
+                .ExecuteNonQueryAsync(token);
         }
 
         /// <summary>
         /// Updates a journal entry, matching by name
         /// </summary>
-        public Task Update(ICommandRunner commandRunner, SqlJournalEntry entry, CancellationToken? token = null)
+        public Task Update(ICommandRunner commandRunner, SqlJournalEntry entry, CancellationToken token = default)
         {
-            return commandRunner.RunCommand(UpdateCmd);
+            return commandRunner.RunCommand(Update);
 
-            Task<int> UpdateCmd(DbCommand cmd) => cmd
+            Task<int> Update(DbCommand cmd) => cmd
                 .Set($@"
                     UPDATE [{schema}].[{table}]
                         SET Checksum = @checksum, Applied = @applied
@@ -124,7 +124,7 @@ namespace MigrationEngine.Implementations.Sql
                     ("name", entry.Name),
                     ("applied", entry.AppliedAt),
                     ("checksum", entry.Checksum))
-                .ExecuteNonQueryAsync(token.OrNone());
+                .ExecuteNonQueryAsync(token);
         }
     }
 }

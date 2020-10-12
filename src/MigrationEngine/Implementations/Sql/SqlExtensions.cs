@@ -9,7 +9,7 @@ namespace MigrationEngine.Implementations.Sql
 {
     public static class SqlExtensions
     {
-        public static async Task SplitAndRun(this ICommandRunner commandRunner, string sql, CancellationToken? token = null)
+        public static async Task SplitAndRun(this ICommandRunner commandRunner, string sql, CancellationToken token = default)
         {
             foreach (var sqlCommand in SplitStatements(sql))
             {
@@ -17,7 +17,7 @@ namespace MigrationEngine.Implementations.Sql
                 {
                     await commandRunner.RunCommand(cmd => cmd
                         .Set(sqlCommand)
-                        .ExecuteNonQueryAsync(token.OrNone()));
+                        .ExecuteNonQueryAsync(token));
                 }
             }
         }

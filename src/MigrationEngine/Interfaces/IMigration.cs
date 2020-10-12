@@ -1,6 +1,6 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
-using MigrationEngine.Options;
 
 namespace MigrationEngine.Interfaces
 {
@@ -8,10 +8,8 @@ namespace MigrationEngine.Interfaces
     {
         string Name { get; }
 
-        MigrationOptions Options { get; }
+        Task Run(IDatabase db, IJournal<T> journal, CancellationToken token = default);
 
-        Task<T> Run(ICommandRunner commandRunner, CancellationToken? token = null);
-
-        bool Matches(T entry);
+        bool ShouldRun(IReadOnlyList<T> existingEntries);
     }
 }

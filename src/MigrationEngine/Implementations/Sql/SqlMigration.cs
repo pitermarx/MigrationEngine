@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using MigrationEngine.Core;
+using MigrationEngine.Implementations.Sql.Options;
 using MigrationEngine.Interfaces;
-using MigrationEngine.Options;
 
 namespace MigrationEngine.Implementations.Sql
 {
@@ -24,13 +27,34 @@ namespace MigrationEngine.Implementations.Sql
         /// Runs an sql script after splitting it in commands
         /// Returns an <see cref="SqlJournalEntry"/>
         /// </summary>
-        public async Task<SqlJournalEntry> Run(ICommandRunner commandRunner, CancellationToken? token = null)
+        public async Task Run(IDatabase db, IJournal<SqlJournalEntry> journal, CancellationToken token = default)
         {
-            await commandRunner.SplitAndRun(sql, token);
-
-            return new SqlJournalEntry { AppliedAt = DateTime.Now, Name = Name, Checksum = sql.GetChecksum() };
+            using (var con = await db.OpenConnection(Options.UseTransaction))
+            {
+                await con.SplitAndRun(sql, token);
+                var entry = new SqlJournalEntry {AppliedAt = DateTime.Now, Name = Name, Checksum = Checksum()};
+                await journal.Add(con, entry, token);
+                con.Commit();
+            }
         }
-        
-        public bool Matches(SqlJournalEntry entry) => entry.Name == Name;
+
+        public bool ShouldRun(IReadOnlyList<SqlJournalEntry> existingEntries)
+        {
+            return Options.RunAlways || existingEntries.All(e => e.Name != Name);
+        }
+
+        private string Checksum()
+        {
+            var bytes = Encoding.ASCII.GetBytes(sql);
+            var hash = new StringBuilder();
+            using (var md5 = MD5.Create())
+            {
+                foreach (var t in md5.ComputeHash(bytes))
+                {
+                    hash.Append(t.ToString("x2"));
+                }
+            }
+            return hash.ToString();
+        }
     }
 }

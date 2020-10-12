@@ -26,14 +26,14 @@ namespace MigrationEngine.Core
             }
             return cmd;
         }
-        
-        internal static async Task<IReadOnlyList<T>> ReadAll<T>(this DbCommand cmd, Func<DbDataReader, T> read, CancellationToken? ct = null)
+
+        internal static async Task<IReadOnlyList<T>> ReadAll<T>(this DbCommand cmd, Func<DbDataReader, T> read, CancellationToken token = default)
         {
             var list = new List<T>();
 
-            using (var r = await cmd.ExecuteReaderAsync(ct.OrNone()))
+            using (var r = await cmd.ExecuteReaderAsync(token))
             {
-                while (await r.ReadAsync(ct.OrNone()))
+                while (await r.ReadAsync(token))
                 {
                     list.Add(read(r));
                 }
@@ -57,7 +57,5 @@ namespace MigrationEngine.Core
 
             return hash.ToString();
         }
-
-        public static CancellationToken OrNone(this CancellationToken? ct) => ct ?? CancellationToken.None;
     }
 }

@@ -3,10 +3,11 @@ using System.Data.Common;
 using System.Data.SqlClient;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Logging;
 using MigrationEngine.Core;
+using MigrationEngine.Implementations.Sql.Options;
 using MigrationEngine.Interfaces;
-using MigrationEngine.Options;
 
 namespace MigrationEngine.Implementations.Sql
 {
@@ -23,11 +24,11 @@ namespace MigrationEngine.Implementations.Sql
         private readonly ConnectionOptions options;
         private readonly ILogger log;
 
-        public SqlDatabase(ConnectionOptions options, ILogger log)
+        public SqlDatabase(ConnectionOptions options, ILogger log = null)
         {
             Name = new SqlConnectionStringBuilder(options.ConnectionString).InitialCatalog?.Trim();
             this.options = options;
-            this.log = log;
+            this.log = log ?? NullLogger.Instance;
 
             var cnxString = options.ConnectionString?.Trim();
             if (string.IsNullOrEmpty(cnxString))
@@ -40,8 +41,14 @@ namespace MigrationEngine.Implementations.Sql
         /// <summary>
         /// Drops the database if it exists on the server
         /// </summary>
-        public async Task Drop(CancellationToken? token = null)
+        public async Task Drop(CancellationToken token = default)
         {
+            if (!await Exists(token))
+            {
+                log.LogWarning("Database {0} does not exist. Cannot drop", Name);
+                return;
+            }
+
             using (var con = await OpenMasterConnection())
             {
                 await con.RunCommand(DropDatabase);
@@ -53,13 +60,13 @@ namespace MigrationEngine.Implementations.Sql
                     ALTER DATABASE [{Name}]
                         SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
                     DROP DATABASE [{Name}];")
-                .ExecuteNonQueryAsync(token.OrNone());
+                .ExecuteNonQueryAsync(token);
         }
 
         /// <summary>
         /// Returns true if the database exists on the server
         /// </summary>
-        public async Task<bool> Exists(CancellationToken? token = null)
+        public async Task<bool> Exists(CancellationToken token = default)
         {
             using (var con = await OpenMasterConnection())
             {
@@ -79,7 +86,7 @@ namespace MigrationEngine.Implementations.Sql
                         FROM sys.sysdatabases
                             WHERE name = @database",
                         ("@database", Name))
-                    .ExecuteScalarAsync(token.OrNone());
+                    .ExecuteScalarAsync(token);
                 return result == 1;
             }
         }
@@ -87,10 +94,12 @@ namespace MigrationEngine.Implementations.Sql
         /// <summary>
         /// Creates the database.
         /// </summary>
-        public async Task Create(CancellationToken? token = null)
+        public async Task Create(CancellationToken token = default)
         {
             using (var con = await OpenMasterConnection())
-                await new SqlMigration("Create", $"CREATE DATABASE [{Name}]").Run(con, token);
+            {
+                await con.RunCommand(c => c.Set("CREATE DATABASE [{Name}]").ExecuteReaderAsync(token));
+            }
         }
 
         /// <summary>
