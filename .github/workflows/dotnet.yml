@@ -17,10 +17,12 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.301
-        working-directory: src
     - name: Restore dependencies
+      working-directory: src
       run: dotnet restore
     - name: Build
+      working-directory: src
       run: dotnet build --no-restore
     - name: Test
+      working-directory: src
       run: dotnet test --no-build --verbosity normal
