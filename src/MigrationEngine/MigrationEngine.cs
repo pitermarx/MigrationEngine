@@ -26,7 +26,7 @@ namespace MigrationEngine
             this.log = log ?? NullLogger.Instance;
         }
 
-                public async Task<TimeSpan> DryRun<T>(IEnumerable<IMigration<T>> migrations, IJournal<T> journal = null, CancellationToken ct = default)
+        public async Task<TimeSpan> DryRun<T>(IEnumerable<IMigration<T>> migrations, IJournal<T> journal = null, CancellationToken ct = default)
             where T : IJournalEntry
         {
             using (var connection = await database.OpenConnection(true))
@@ -35,10 +35,10 @@ namespace MigrationEngine
             }
         }
 
-        public async Task<TimeSpan> Migrate<T>(IEnumerable<IMigration<T>> migrations, IJournal<T> journal = null, CancellationToken ct = default)
+        public Task<TimeSpan> Migrate<T>(IEnumerable<IMigration<T>> migrations, IJournal<T> journal = null, CancellationToken ct = default)
             where T : IJournalEntry
         {
-            return await MigrateInternal(database, migrations, journal, ct);
+            return MigrateInternal(database, migrations, journal, ct);
         }
 
         private async Task<TimeSpan> MigrateInternal<T>(IDatabase db, IEnumerable<IMigration<T>> migrations, IJournal<T> journal, CancellationToken ct)
