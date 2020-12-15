@@ -11,15 +11,13 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    env:
-      working-directory: src  
-
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.301
+        working-directory: src
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
