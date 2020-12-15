@@ -59,13 +59,13 @@ namespace MigrationEngine
                     sw.Stop();
 
                     times[mig.Name] = sw.Elapsed;
-                    log.DebugFormat("{0} ({1}) {2}", db.Name, sw.Elapsed, mig.Name);
+                    log.LogDebug("{0} ({1}) {2}", db.Name, sw.Elapsed, mig.Name);
 
                     sw.Reset();
                 }
                 catch
                 {
-                    log.ErrorFormat("Failed migration on script {0}", mig.Name);
+                    log.LogError("Failed migration on script {0}", mig.Name);
                     throw;
                 }
             }
@@ -76,7 +76,7 @@ namespace MigrationEngine
             {
                 using (var con = await db.OpenConnection())
                 {
-                    log.InfoFormat("{0} -> Getting journal entries", db.Name);
+                    log.LogInformation("{0} -> Getting journal entries", db.Name);
                     return await journal.EnsureJournal(con, ct);
                 }
             }
