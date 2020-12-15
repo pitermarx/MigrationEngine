@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Title>MigrationEngine</Title>
     <Authors>pitermarx</Authors>
-    <TargetFrameworks>net472</TargetFrameworks>
+    <TargetFrameworks>net50</TargetFrameworks>
     <AssemblyName>MigrationEngine</AssemblyName>
     <RootNamespace>MigrationEngine</RootNamespace>
     <PackageId>MigrationEngine</PackageId>
