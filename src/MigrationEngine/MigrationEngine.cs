@@ -26,19 +26,22 @@ namespace MigrationEngine
             this.log = log ?? NullLogger.Instance;
         }
 
-        public async Task EnsureDatabase(CancellationToken ct = default)
+                public async Task<TimeSpan> DryRun<T>(IEnumerable<IMigration<T>> migrations, IJournal<T> journal = null, CancellationToken ct = default)
+            where T : IJournalEntry
         {
-            if (!await database.Exists(ct))
+            using (var connection = await database.OpenConnection(true))
             {
-                await database.Create(ct);
+                return await MigrateInternal(new DryRunDatabase(database.Name, connection), migrations, journal, ct);
             }
         }
 
-        public Task<TimeSpan> Migrate<T>(IEnumerable<IMigration<T>> migrations, CancellationToken token = default)
+        public async Task<TimeSpan> Migrate<T>(IEnumerable<IMigration<T>> migrations, IJournal<T> journal = null, CancellationToken ct = default)
             where T : IJournalEntry
-            => Migrate(migrations, new NullJournal<T>(), token);
+        {
+            return await MigrateInternal(database, migrations, journal, ct);
+        }
 
-        public async Task<TimeSpan> Migrate<T>(IEnumerable<IMigration<T>> migrations, IJournal<T> journal = null, CancellationToken token = default)
+        private async Task<TimeSpan> MigrateInternal<T>(IDatabase db, IEnumerable<IMigration<T>> migrations, IJournal<T> journal, CancellationToken ct)
             where T : IJournalEntry
         {
             journal = journal ?? new NullJournal<T>();
@@ -52,17 +55,17 @@ namespace MigrationEngine
                 try
                 {
                     sw.Start();
-                    await mig.Run(database, journal, token);
+                    await mig.Run(db, journal, ct);
                     sw.Stop();
 
                     times[mig.Name] = sw.Elapsed;
-                    log.LogDebug("{0} ({1}) {2}", database.Name, sw.Elapsed, mig.Name);
+                    log.DebugFormat("{0} ({1}) {2}", db.Name, sw.Elapsed, mig.Name);
 
                     sw.Reset();
                 }
                 catch
                 {
-                    log.LogError("Failed migration on script {0}", mig.Name);
+                    log.ErrorFormat("Failed migration on script {0}", mig.Name);
                     throw;
                 }
             }
@@ -71,10 +74,10 @@ namespace MigrationEngine
 
             async Task<IReadOnlyList<T>> EnsureJournal()
             {
-                using (var con = await database.OpenConnection())
+                using (var con = await db.OpenConnection())
                 {
-                    log.LogInformation("{0} -> Getting journal entries", database.Name);
-                    return await journal.EnsureJournal(con, token);
+                    log.InfoFormat("{0} -> Getting journal entries", db.Name);
+                    return await journal.EnsureJournal(con, ct);
                 }
             }
         }
