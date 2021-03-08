@@ -1,7 +1,7 @@
 using Microsoft.Data.SqlClient;
 using System.Threading.Tasks;
 using MigrationEngine.Implementations.Sql;
-using MigrationEngine.Options;
+using MigrationEngine.Implementations.Sql.Options;
 using NUnit.Framework;
 
 namespace MigrationEngine.Tests
